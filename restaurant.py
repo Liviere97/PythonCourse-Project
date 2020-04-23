@@ -48,7 +48,7 @@ def create_table_orden(conn):
     conn.execute(sql)
     print("the tables orden has been created succesfully")
 
-
+#FUNCION PARA EL REGISTRO
 def get_registro(conn):
     first_name = input('INGRESA TU NOMBRE:  ')
     last_name = input('INGRESA TU APELLIDO:  ')
@@ -68,20 +68,44 @@ def get_registro(conn):
     conn.commit()
 
     print('REGISTRO EXITOSO')
+#FUNCION PARA EL INICIO DE SESION
+def get_inicio_sesion(conn):
+    EMAIL = print (input('INGRESA EMAIL: '))
+    CONTRASEÑA = print( input ('INGRESA PASSWORD: '))
+
+    sql = '''
+        SELECT 
+            first_name, last_name, email, phone, password, timestamp
+        FROM
+            usuarios
+        WHERE
+            email = ? 
+            password = ?
+    '''
+    values = (EMAIL , CONTRASEÑA ,)
+    cursor = conn.execute(sql, values)
+
+    data=cursor.fetchall()
+    if len(data) == 0:
+        print('USUARIO NO VALIDO , VE A REGISTRARTE ')
+    
+    #VALIDACION DE LA OPCION ELEGIDA
 def validate_user_selection(selection):
     return isinstance(selection, int) and selection >0 and selection < 4
 
 def handle_user_selection(selection, conn):
     if selection == 1:
-        #get_inicio_sesion(conn) 
-        pass
+        get_inicio_sesion(conn) 
+        
     elif selection == 2:
         get_registro(conn)
     else :
         #salir_del_programa(conn)
         pass
-    
+#NUESTRO MAIN    
 def main():
+    getOut = 'N'
+    while getOut == 'N':
         conn = create_or_get_database()
         create_table_usuario(conn)
         create_table_dish(conn)
